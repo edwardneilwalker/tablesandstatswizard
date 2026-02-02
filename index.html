@@ -1,17 +1,448 @@
-
 <!DOCTYPE html>
-<html lang='en'>
+<html lang="en">
 <head>
-<meta charset='UTF-8'>
-<meta name='viewport' content='width=device-width, initial-scale=1'>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Tables and Stats Reporting Wizard</title>
-<link rel='stylesheet' href='style.css'>
+
+<!-- LOCAL POPPINS (maps your single WOFF2 to both regular + semibold) -->
+<style>
+@font-face {
+  font-family: "Poppins";
+  src: url("poppins-bold-webfont.woff2") format("woff2");
+  font-weight: 400; /* treat as regular */
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Poppins";
+  src: url("poppins-bold-webfont.woff2") format("woff2");
+  font-weight: 600; /* treat as semibold */
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Light theme + layout */
+:root{
+  --violet:#794f9f;       /* Instem violet */
+  --pink:#ee58c4;         /* Instem pink   */
+  --text:#1f1f1f;
+  --bg:#ffffff;
+}
+
+html,body{height:100%}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:"Poppins","Segoe UI",Helvetica,Arial,sans-serif;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+
+/* Header */
+header{
+  display:flex;
+  align-items:center;
+  justify-content:flex-start;
+  gap:12px;
+  padding:16px 24px;
+  border-bottom:3px solid var(--violet);
+  background:#fff;
+}
+header .logo{
+  max-height:48px;         /* <-- keeps the big logo under control */
+  width:auto;
+  object-fit:contain;
+}
+
+/* Wizard container */
+.wizard{
+  max-width:800px;
+  margin:40px auto;
+  padding:20px;
+}
+
+/* Subtle transition (Option 1: slower + clearer) */
+.wizard.animate{
+  animation: fadeSlide 0.9s cubic-bezier(.22,.61,.36,1);
+}
+@keyframes fadeSlide{
+  from{ opacity:0; transform:translateY(16px); }
+  to  { opacity:1; transform:translateY(0); }
+}
+
+h1{
+  font-size:28px;
+  color:var(--violet);
+  margin:0 0 10px;
+}
+p{
+  font-size:18px;
+  margin:0;
+}
+
+/* Buttons */
+.buttons{
+  margin-top:24px;
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+.btn{
+  background:var(--pink);
+  padding:16px 20px;
+  border-radius:12px;
+  font-size:18px;
+  font-weight:600;
+  text-align:center;
+  cursor:pointer;
+  color:#fff;
+  transition:background-color .25s ease, box-shadow .25s ease;
+  box-shadow:0 2px 6px rgba(0,0,0,.06);
+}
+.btn:hover{
+  background:var(--violet);
+}
+
+/* Violet outcome box */
+.outcome{
+  background:var(--violet);
+  color:#fff;
+  padding:16px 20px;
+  border-radius:12px;
+  font-size:18px;
+  font-weight:600;
+  text-align:center;
+  margin-top:20px;
+  box-shadow:0 2px 6px rgba(0,0,0,.06);
+  user-select:text;
+}
+
+/* Navigation */
+.nav{
+  margin-top:30px;
+  display:flex;
+  gap:20px;
+}
+.nav button{
+  background:none;
+  border:none;
+  color:var(--violet);
+  font-size:16px;
+  font-weight:600;
+  cursor:pointer;
+  padding:0;
+}
+.nav button:hover{ text-decoration:underline; }
+</style>
 </head>
+
 <body>
+
 <header>
-  <img src='instem-logo.png' class='logo' alt='Instem Logo'>
-</header>
-<div id='wizard' class='wizard'></div>
-<script src='script.js'></script>
+  <!-- Your Instem logo (kept at a safe size by .logo rules above) -->
+  <img src="instem-logoder>
+
+<!-- Wizard host -->
+<div id="wizard" class="wizard"></div>
+
+<!-- Full wizard logic inline -->
+<script>
+/* ==========================================================
+   FULL DECISION TREE — light mode + subtle transitions
+   ========================================================== */
+
+const steps = {
+  /* Start */
+  start:{
+    title:"Tables and Stats Reporting Wizard",
+    text:"Follow the prompts to find the correct report type.",
+    buttons:[ {label:"Begin", next:"q_dataType"} ]
+  },
+
+  /* Q1 */
+  q_dataType:{
+    title:"What kind of data are you interested in evaluating?",
+    buttons:[
+      {label:"Individual Animal Data (Non Clin Ob)", next:"q_ind_measureCount"},
+      {label:"Clinical Observation Data", next:"q_clin_breakdownDays"},
+      {label:"Summary/Comparison Data for Groups (Non Clin Ob)", next:"q_grp_ind_or_summary"},
+      {label:"Summary/Comparison Data for Cages (Food or Water only)", next:"q_cages_ind_or_summary"}
+    ]
+  },
+
+  /* ---------- INDIVIDUAL ---------- */
+  q_ind_measureCount:{
+    title:"How many measurements do you want to examine?",
+    buttons:[
+      {label:"One Measurement", next:"ind_out_oneMeasurement"},
+      {label:"More than one measurement", next:"q_ind_more_measurements"}
+    ]
+  },
+
+  ind_out_oneMeasurement:{
+    title:"Recommended Report",
+    text:"GRA301 — Animals by Time (Fixed Parameter)"
+  },
+
+  q_ind_more_measurements:{
+    title:"Choose the type:",
+    buttons:[
+      {label:"Over time", next:"ind_out_overTime"},
+      {label:"At a specific time point", next:"ind_out_fixedTime"},
+      {label:"Over multiple time periods or points", next:"ind_out_multipleTime"}
+    ]
+  },
+
+  ind_out_overTime:{
+    title:"Recommended Report",
+    text:"GRA303 — Animals by Mixed Parameter/Time"
+  },
+
+  ind_out_fixedTime:{
+    title:"Recommended Report",
+    text:"GRA302 — Animals by Parameter (Fixed Time)"
+  },
+
+  ind_out_multipleTime:{
+    title:"Recommended Report",
+    text:"GRA317 — Animals/Time by Parameter"
+  },
+
+  /* ---------- CLINICAL ---------- */
+  q_clin_breakdownDays:{
+    title:"Do you want a breakdown by days?",
+    buttons:[
+      {label:"Yes", next:"clin_out_byAnimalTime"},
+      {label:"No", next:"q_clin_breakdownOverTime"}
+    ]
+  },
+
+  clin_out_byAnimalTime:{
+    title:"Recommended Report",
+    text:"COA302 — Clinical Observations: Animals by Time"
+  },
+
+  q_clin_breakdownOverTime:{
+    title:"Do you want a breakdown over time?",
+    buttons:[
+      {label:"Yes", next:"clin_out_intergroup_overTime"},
+      {label:"No", next:"clin_out_intergroup"}
+    ]
+  },
+
+  clin_out_intergroup_overTime:{
+    title:"Recommended Report",
+    text:"COA312 — Intergroup Comparison of Clinical Observations Across Time (Groups down side)"
+  },
+
+  clin_out_intergroup:{
+    title:"Recommended Report",
+    text:"COA311 — Intergroup Comparison of Clinical Observations (Groups across top)"
+  },
+
+  /* ---------- GROUP SUMMARY ---------- */
+  q_grp_ind_or_summary:{
+    title:"Do you want to see individual or group summary data?",
+    buttons:[
+      {label:"Individual", next:"grp_out_individual"},
+      {label:"Group Summary", next:"q_grp_time_or_fixed"}
+    ]
+  },
+
+  grp_out_individual:{
+    title:"Recommended Report",
+    text:"GRA331 — Individual Cages Report"
+  },
+
+  q_grp_time_or_fixed:{
+    title:"Do you want a fixed timepoint or multiple measurements over time?",
+    buttons:[
+      {label:"Fixed Time Point", next:"q_grp_fixed_groupOrientation"},
+      {label:"Multiple Measures over Time", next:"q_grp_multi_groupOrientation"}
+    ]
+  },
+
+  q_grp_fixed_groupOrientation:{
+    title:"Do you want the groups down the side or across the top?",
+    buttons:[
+      {label:"Groups down side", next:"grp_out_fixed_down"},
+      {label:"Groups across top", next:"grp_out_fixed_across"}
+    ]
+  },
+
+  grp_out_fixed_down:{
+    title:"Recommended Report",
+    text:"GRA306 — Group Summary by Parameter (Fixed Time, Groups Down Side)"
+  },
+
+  grp_out_fixed_across:{
+    title:"Recommended Report",
+    text:"GRA307 — Group Summary by Parameter (Fixed Time, Groups Across Top)"
+  },
+
+  q_grp_multi_groupOrientation:{
+    title:"Do you want the groups down the side or across the top?",
+    buttons:[
+      {label:"Groups down side", next:"grp_out_multi_down"},
+      {label:"Groups across top", next:"grp_out_multi_across"}
+    ]
+  },
+
+  grp_out_multi_down:{
+    title:"Recommended Report",
+    text:"GRA308 — Group Summary by Mixed Parameter/Time (Groups Down Side)"
+  },
+
+  grp_out_multi_across:{
+    title:"Recommended Report",
+    text:"GRA309 — Group Summary by Mixed Parameter/Time (Groups Across Top)"
+  },
+
+  /* ---------- CAGES ---------- */
+  q_cages_ind_or_summary:{
+    title:"Do you want to see individual or group summary data?",
+    buttons:[
+      {label:"Individual", next:"cage_out_individual"},
+      {label:"Group Summary", next:"q_cage_group_time"}
+    ]
+  },
+
+  cage_out_individual:{
+    title:"Recommended Report",
+    text:"GRA331 — Individual Cages Report"
+  },
+
+  q_cage_group_time:{
+    title:"Do you want one parameter over time?",
+    buttons:[
+      {label:"Yes", next:"q_cage_groupOrientation_time"},
+      {label:"No", next:"q_cage_fixed_or_multi"}
+    ]
+  },
+
+  q_cage_groupOrientation_time:{
+    title:"Do you want the groups down the side or across the top?",
+    buttons:[
+      {label:"Groups down side", next:"cage_out_GRA304"},
+      {label:"Groups across top", next:"cage_out_GRA305"}
+    ]
+  },
+
+  cage_out_GRA304:{
+    title:"Recommended Report",
+    text:"GRA304 — Group Summary by Time (Fixed Parameter, Groups Down Side)"
+  },
+
+  cage_out_GRA305:{
+    title:"Recommended Report",
+    text:"GRA305 — Group Summary by Time (Fixed Parameter, Groups Across Top)"
+  },
+
+  q_cage_fixed_or_multi:{
+    title:"Do you want a fixed timepoint or multiple measurements over time?",
+    buttons:[
+      {label:"Fixed time point", next:"q_cage_fixed_orientation"},
+      {label:"Multiple measurements over time", next:"q_cage_multi_orientation"}
+    ]
+  },
+
+  q_cage_fixed_orientation:{
+    title:"Do you want the groups down the side or across the top?",
+    buttons:[
+      {label:"Groups down side", next:"cage_out_GRA306"},
+      {label:"Groups across top", next:"cage_out_GRA307"}
+    ]
+  },
+
+  cage_out_GRA306:{
+    title:"Recommended Report",
+    text:"GRA306 — Group Summary by Parameter (Fixed Time, Groups Down Side)"
+  },
+
+  cage_out_GRA307:{
+    title:"Recommended Report",
+    text:"GRA307 — Group Summary by Parameter (Fixed Time, Groups Across Top)"
+  },
+
+  q_cage_multi_orientation:{
+    title:"Do you want the groups down the side or across the top?",
+    buttons:[
+      {label:"Groups down side", next:"cage_out_GRA308"},
+      {label:"Groups across top", next:"cage_out_GRA309"}
+    ]
+  },
+
+  cage_out_GRA308:{
+    title:"Recommended Report",
+    text:"GRA308 — Group Summary by Mixed Parameter/Time (Groups Down Side)"
+  },
+
+  cage_out_GRA309:{
+    title:"Recommended Report",
+    text:"GRA309 — Group Summary by Mixed Parameter/Time (Groups Across Top)"
+  }
+};
+
+/* ---------- Engine + Animation replay ---------- */
+let historyStack=["start"];
+
+function replayAnimation(){
+  const el=document.getElementById("wizard");
+  el.classList.remove("animate");
+  // Force reflow so animation restarts each time
+  void el.offsetWidth;
+  el.classList.add("animate");
+}
+
+function render(key){
+  const step=steps[key];
+  const el=document.getElementById("wizard");
+
+  let html = `
+    <h1>${step.title}</h1>
+    ${step.text && step.buttons ? `<p>${step.text}</p>` : ""}
+    <div class="buttons">
+  `;
+
+  if(step.buttons){
+    step.buttons.forEach(b=>{
+      html += `<div class="btn" onclick="goTo('${b.next}')">${b.label}</div>`;
+    });
+    html += `</div>`;
+  } else {
+    html += `</div>`;
+    if(step.text){
+      html += `<div class="outcome">${step.text}</div>`;
+    }
+  }
+
+  html += `
+    <div class="nav">
+      ${historyStack.length>1 ? `<button onclick="goBack()">← Back</button>` : ""}
+      <button onclick="restart()">Restart</button>
+    </div>
+  `;
+
+  el.innerHTML = html;
+  replayAnimation();
+}
+
+function goTo(next){
+  historyStack.push(next);
+  render(next);
+}
+function goBack(){
+  historyStack.pop();
+  render(historyStack[historyStack.length-1]);
+}
+function restart(){
+  historyStack=["start"];
+  render("start");
+}
+
+render("start");
+</script>
 </body>
 </html>
