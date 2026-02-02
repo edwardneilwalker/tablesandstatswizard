@@ -1,0 +1,83 @@
+
+/* =============================
+   Poppins local font-face
+   ============================= */
+@font-face {
+  font-family: "Poppins";
+  src: url("poppins-bold-webfont.woff2") format("woff2");
+  font-weight: 400; /* treat as Regular */
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Poppins";
+  src: url("Poppins-SemiBold.woff2") format("woff2");
+  font-weight: 600; /* true SemiBold */
+  font-style: normal;
+  font-display: swap;
+}
+
+:root{
+  --violet:#794f9f;   /* Instem violet */
+  --pink:#ee58c4;     /* Instem pink   */
+  --text:#1f1f1f;
+  --bg:#ffffff;
+}
+
+/* Base */
+html,body{height:100%}
+body{
+  margin:0; background:var(--bg); color:var(--text);
+  font-family:"Poppins","Segoe UI",Helvetica,Arial,sans-serif;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+
+/* Header */
+header{
+  display:flex; align-items:center; justify-content:flex-start;
+  padding:16px 24px; border-bottom:3px solid var(--violet); background:#fff;
+}
+.logo{ max-height:48px; width:auto; object-fit:contain; }
+
+/* Wizard container */
+.wizard{ max-width:800px; margin:40px auto; padding:20px; }
+
+/* Subtle transition (Option 1: slower + clearer) */
+.wizard.animate{ animation: fadeSlide 0.9s cubic-bezier(.22,.61,.36,1); }
+@keyframes fadeSlide{ from{opacity:0; transform:translateY(16px);} to{opacity:1; transform:translateY(0);} }
+
+h1{ font-size:28px; color:var(--violet); margin:0 0 10px; }
+
+/* NEW: subtitle directly under the H1 */
+.subtitle{
+  font-family:"Poppins","Segoe UI",Helvetica,Arial,sans-serif;
+  font-weight:600;  /* use real SemiBold */
+  font-size:18px; line-height:1.45;
+  margin:0.25rem 0 0 0;
+}
+
+/* Buttons */
+.buttons{ margin-top:24px; display:flex; flex-direction:column; gap:12px; }
+.btn{
+  font-family:"Poppins","Segoe UI",Helvetica,Arial,sans-serif;
+  font-weight:600;          /* use real SemiBold for options */
+  background:var(--pink);
+  padding:16px 20px; border-radius:12px; font-size:18px;
+  text-align:center; cursor:pointer; color:#fff;
+  transition:background-color .25s ease, box-shadow .25s ease;
+  box-shadow:0 2px 6px rgba(0,0,0,.06);
+}
+.btn:hover{ background:var(--violet); }
+
+/* Violet outcome box */
+.outcome{
+  background:var(--violet); color:#fff; padding:16px 20px;
+  border-radius:12px; font-size:18px; font-weight:600; text-align:center;
+  margin-top:20px; box-shadow:0 2px 6px rgba(0,0,0,.06); user-select:text;
+}
+
+/* Nav */
+.nav{ margin-top:30px; display:flex; gap:20px; }
+.nav button{ background:none; border:none; color:var(--violet); font-size:16px; font-weight:600; cursor:pointer; padding:0; }
+.nav button:hover{ text-decoration:underline; }
