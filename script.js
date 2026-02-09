@@ -16,7 +16,7 @@ const steps = {
     title:"What kind of data are you interested in evaluating?",
     buttons:[
       {label:"Individual Animal Data (Non Clin Ob)", next:"q_ind_measureCount"},
-      {label:"Clinical Observation Data", next:"q_clin_breakdownDays"},
+      {label:"Clinical Observation Data", next:"q_clin_ind_or_summary"},
       {label:"Summary/Comparison Data for Groups (Non Clin Ob)", next:"q_grp_ind_or_summary"},
       {label:"Summary/Comparison Data for Cages (Food or Water only)", next:"q_cages_ind_or_summary"}
     ]
@@ -44,13 +44,21 @@ const steps = {
   ind_out_multipleTime:{ title:"Recommended Report", text:"GRA317 — Animals/Time by Parameter" },
 
   // ----- Clinical -----
-  q_clin_breakdownDays:{
-    title:"Do you want a breakdown by days?",
-    buttons:[ {label:"Yes", next:"clin_out_byAnimalTime"}, {label:"No", next:"q_clin_breakdownOverTime"} ]
+  q_clin_ind_or_summary:{
+    title:"Do you want individual or group summary data?",
+    buttons:[
+      {label:"Individual Data", next:"q_clin_breakdownDays"},
+      {label:"Group Summary Data", next:"q_clin_breakdownOverTime"}
+    ]
   },
-  clin_out_byAnimalTime:{ title:"Recommended Report", text:"COA302 — Clinical Observations: Animals by Time" },
+  q_clin_breakdownDays:{
+    title:"Do you want a break down by days?",
+    buttons:[ {label:"Yes", next:"clin_out_byAnimalTime"}, {label:"No", next:"clin_out_byAnimal"} ]
+  },
+  clin_out_byAnimalTime:{ title:"Recommended Report", text:"COA302 — Clinical Observations — Animals by Time" },
+  clin_out_byAnimal:{ title:"Recommended Report", text:"COA301 — Clinical Observations by Animal" },
   q_clin_breakdownOverTime:{
-    title:"Do you want a breakdown over time?",
+    title:"Do you want a break down over time?",
     buttons:[ {label:"Yes", next:"clin_out_intergroup_overTime"}, {label:"No", next:"clin_out_intergroup"} ]
   },
   clin_out_intergroup_overTime:{ title:"Recommended Report", text:"COA312 — Intergroup Comparison of Clinical Observations Across Time (Groups down side)" },
@@ -82,35 +90,15 @@ const steps = {
   // ----- Cages -----
   q_cages_ind_or_summary:{
     title:"Do you want to see individual or group summary data?",
-    buttons:[ {label:"Individual", next:"cage_out_individual"}, {label:"Group Summary", next:"q_cage_group_time"} ]
+    buttons:[ {label:"Individual", next:"cage_out_individual"}, {label:"Group Summary", next:"q_cage_group_orientation"} ]
   },
   cage_out_individual:{ title:"Recommended Report", text:"GRA331 — Individual Cages Report" },
-  q_cage_group_time:{
-    title:"Do you want one parameter over time?",
-    buttons:[ {label:"Yes", next:"q_cage_groupOrientation_time"}, {label:"No", next:"q_cage_fixed_or_multi"} ]
-  },
-  q_cage_groupOrientation_time:{
+  q_cage_group_orientation:{
     title:"Do you want the groups down the side or across the top?",
-    buttons:[ {label:"Groups down side", next:"cage_out_GRA304"}, {label:"Groups across top", next:"cage_out_GRA305"} ]
+    buttons:[ {label:"Groups down side", next:"cage_out_GRA341"}, {label:"Groups across top", next:"cage_out_GRA342"} ]
   },
-  cage_out_GRA304:{ title:"Recommended Report", text:"GRA304 — Group Summary by Time (Fixed Parameter, Groups Down Side)" },
-  cage_out_GRA305:{ title:"Recommended Report", text:"GRA305 — Group Summary by Time (Fixed Parameter, Groups Across Top)" },
-  q_cage_fixed_or_multi:{
-    title:"Do you want a fixed timepoint or multiple measurements over time?",
-    buttons:[ {label:"Fixed time point", next:"q_cage_fixed_orientation"}, {label:"Multiple measurements over time", next:"q_cage_multi_orientation"} ]
-  },
-  q_cage_fixed_orientation:{
-    title:"Do you want the groups down the side or across the top?",
-    buttons:[ {label:"Groups down side", next:"cage_out_GRA306"}, {label:"Groups across top", next:"cage_out_GRA307"} ]
-  },
-  cage_out_GRA306:{ title:"Recommended Report", text:"GRA306 — Group Summary by Parameter (Fixed Time, Groups Down Side)" },
-  cage_out_GRA307:{ title:"Recommended Report", text:"GRA307 — Group Summary by Parameter (Fixed Time, Groups Across Top)" },
-  q_cage_multi_orientation:{
-    title:"Do you want the groups down the side or across the top?",
-    buttons:[ {label:"Groups down side", next:"cage_out_GRA308"}, {label:"Groups across top", next:"cage_out_GRA309"} ]
-  },
-  cage_out_GRA308:{ title:"Recommended Report", text:"GRA308 — Group Summary by Mixed Parameter/Time (Groups Down Side)" },
-  cage_out_GRA309:{ title:"Recommended Report", text:"GRA309 — Group Summary by Mixed Parameter/Time (Groups Across Top)" }
+  cage_out_GRA341:{ title:"Recommended Report", text:"GRA341 — Cage Group Summary by Time — Fixed Parameter (Groups Down Side)" },
+  cage_out_GRA342:{ title:"Recommended Report", text:"GRA342 — Cage Group Summary by Time — Fixed Parameter (Groups Across Top)" }
 };
 
 // -----------------------------
