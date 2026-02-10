@@ -124,6 +124,15 @@ function render(key){
   const el = document.getElementById("wizard");
   if(!el) return;
 
+  if(!step){
+    el.innerHTML = `
+      <h1>Something went wrong</h1>
+      <div class="outcome">The selected path could not be found (${key}). Please restart the wizard.</div>
+      <div class="nav"><button onclick="restart()">Restart</button></div>
+    `;
+    return;
+  }
+
   let html = `
     <h1>${step.title}</h1>
     ${step.text && step.buttons ? `<p class="subtitle">${step.text}</p>` : ""}
@@ -155,9 +164,24 @@ function goTo(next){ historyStack.push(next); render(next); }
 function goBack(){ historyStack.pop(); render(historyStack[historyStack.length-1]); }
 function restart(){ historyStack=["start"]; render("start"); }
 
+function validateSteps(){
+  const missing = [];
+  Object.entries(steps).forEach(([key, step])=>{
+    if(!step.buttons) return;
+    step.buttons.forEach(({next})=>{
+      if(!steps[next]) missing.push(`${key} -> ${next}`);
+    });
+  });
+
+  if(missing.length){
+    console.error("Wizard configuration has missing routes:", missing);
+  }
+}
+
 // Ensure DOM is ready before first render
 if(document.readyState === 'loading'){
-  document.addEventListener('DOMContentLoaded', ()=>render('start'));
+  document.addEventListener('DOMContentLoaded', ()=>{ validateSteps(); render('start'); });
 } else {
+  validateSteps();
   render('start');
 }
