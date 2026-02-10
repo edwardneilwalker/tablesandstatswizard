@@ -17,7 +17,7 @@ const steps = {
     buttons:[
       {label:"Individual Animal Data (Non Clin Ob)", next:"q_ind_measureCount"},
       {label:"Clinical Observation Data", next:"q_clin_ind_or_summary"},
-      {label:"Summary/Comparison Data for Groups (Non Clin Ob)", next:"q_grp_parameter_over_time"},
+      {label:"Summary/Comparison Data for Groups (Non Clin Ob)", next:"q_grp_ind_or_summary"},
       {label:"Summary/Comparison Data for Cages (Food or Water only)", next:"q_cages_ind_or_summary"}
     ]
   },
@@ -67,14 +67,9 @@ const steps = {
   // ----- Group Summary -----
   q_grp_parameter_over_time:{
     title:"Do you want one parameter over time?",
-    buttons:[ {label:"Yes", next:"q_grp_time_group_orientation"}, {label:"No", next:"q_grp_fixed_or_multi"} ]
+    buttons:[ {label:"Yes", next:"q_grp_time_groupOrientation"}, {label:"No", next:"q_grp_fixed_or_multi"} ]
   },
-  // Backward-compatible alias for older links/bookmarks
-  q_grp_ind_or_summary:{
-    title:"Do you want one parameter over time?",
-    buttons:[ {label:"Yes", next:"q_grp_time_group_orientation"}, {label:"No", next:"q_grp_fixed_or_multi"} ]
-  },
-  q_grp_time_group_orientation:{
+  q_grp_time_groupOrientation:{
     title:"Do you want the groups down the side or across the top?",
     buttons:[ {label:"Groups down side", next:"grp_out_time_down"}, {label:"Groups across top", next:"grp_out_time_across"} ]
   },
