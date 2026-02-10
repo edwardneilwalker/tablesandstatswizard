@@ -111,6 +111,14 @@ const steps = {
 // -----------------------------
 let historyStack = ["start"];
 
+const stepAliases = {
+  q_grp_ind_or_summary: "q_grp_parameter_over_time"
+};
+
+function resolveStepKey(key){
+  return steps[key] ? key : (stepAliases[key] || key);
+}
+
 function replayAnimation(){
   const el = document.getElementById("wizard");
   if(!el) return;
@@ -120,7 +128,8 @@ function replayAnimation(){
 }
 
 function render(key){
-  const step = steps[key];
+  const resolvedKey = resolveStepKey(key);
+  const step = steps[resolvedKey];
   const el = document.getElementById("wizard");
   if(!el) return;
 
@@ -160,7 +169,11 @@ function render(key){
   replayAnimation();
 }
 
-function goTo(next){ historyStack.push(next); render(next); }
+function goTo(next){
+  const resolvedNext = resolveStepKey(next);
+  historyStack.push(resolvedNext);
+  render(resolvedNext);
+}
 function goBack(){ historyStack.pop(); render(historyStack[historyStack.length-1]); }
 function restart(){ historyStack=["start"]; render("start"); }
 
