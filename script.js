@@ -65,12 +65,17 @@ const steps = {
   clin_out_intergroup:{        title:"Recommended Report", text:"COA311 — Intergroup Comparison of Clinical Observations (Groups across top)" },
 
   // ----- Group Summary -----
-  q_grp_ind_or_summary:{
-    title:"Do you want to see individual or group summary data?",
-    buttons:[ {label:"Individual", next:"grp_out_individual"}, {label:"Group Summary", next:"q_grp_time_or_fixed"} ]
+  q_grp_parameter_over_time:{
+    title:"Do you want one parameter over time?",
+    buttons:[ {label:"Yes", next:"q_grp_time_groupOrientation"}, {label:"No", next:"q_grp_fixed_or_multi"} ]
   },
-  grp_out_individual:{ title:"Recommended Report", text:"GRA331 — Individual Cages Report" },
-  q_grp_time_or_fixed:{
+  q_grp_time_groupOrientation:{
+    title:"Do you want the groups down the side or across the top?",
+    buttons:[ {label:"Groups down side", next:"grp_out_time_down"}, {label:"Groups across top", next:"grp_out_time_across"} ]
+  },
+  grp_out_time_down:{ title:"Recommended Report", text:"GRA304 — Group Summary by Time — Fixed Parameter (Groups Down Side)" },
+  grp_out_time_across:{ title:"Recommended Report", text:"GRA305 — Group Summary by Time — Fixed Parameter (Groups Across Top)" },
+  q_grp_fixed_or_multi:{
     title:"Do you want a fixed timepoint or multiple measurements over time?",
     buttons:[ {label:"Fixed Time Point", next:"q_grp_fixed_groupOrientation"}, {label:"Multiple Measures over Time", next:"q_grp_multi_groupOrientation"} ]
   },
@@ -78,8 +83,8 @@ const steps = {
     title:"Do you want the groups down the side or across the top?",
     buttons:[ {label:"Groups down side", next:"grp_out_fixed_down"}, {label:"Groups across top", next:"grp_out_fixed_across"} ]
   },
-  grp_out_fixed_down:{   title:"Recommended Report", text:"GRA306 — Group Summary by Parameter (Fixed Time, Groups Down Side)" },
-  grp_out_fixed_across:{ title:"Recommended Report", text:"GRA307 — Group Summary by Parameter (Fixed Time, Groups Across Top)" },
+  grp_out_fixed_down:{   title:"Recommended Report", text:"GRA306 — Group Summary by Parameter — Fixed Time (Groups Down Side)" },
+  grp_out_fixed_across:{ title:"Recommended Report", text:"GRA307 — Group Summary by Parameter — Fixed Time (Groups Across Top)" },
   q_grp_multi_groupOrientation:{
     title:"Do you want the groups down the side or across the top?",
     buttons:[ {label:"Groups down side", next:"grp_out_multi_down"}, {label:"Groups across top", next:"grp_out_multi_across"} ]
