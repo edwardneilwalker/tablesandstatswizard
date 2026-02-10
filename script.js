@@ -17,7 +17,7 @@ const steps = {
     buttons:[
       {label:"Individual Animal Data (Non Clin Ob)", next:"q_ind_measureCount"},
       {label:"Clinical Observation Data", next:"q_clin_ind_or_summary"},
-      {label:"Summary/Comparison Data for Groups (Non Clin Ob)", next:"q_grp_parameter_over_time"},
+      {label:"Summary/Comparison Data for Groups (Non Clin Ob)", next:"q_grp_ind_or_summary"},
       {label:"Summary/Comparison Data for Cages (Food or Water only)", next:"q_cages_ind_or_summary"}
     ]
   },
