@@ -127,6 +127,20 @@ function replayAnimation(){
   el.classList.add("animate");
 }
 
+function getExamplePdfPath(step){
+  if(step.examplePdf){
+    return step.examplePdf;
+  }
+
+  if(!step.text) return null;
+
+  const match = step.text.match(/\b(COA|GRA)(\d{3})\b/);
+  if(!match) return null;
+
+  const [, prefix, digits] = match;
+  return `example-reports/${prefix}_${digits}.pdf`;
+}
+
 function render(key){
   const resolvedKey = resolveStepKey(key);
   const step = steps[resolvedKey];
@@ -155,7 +169,17 @@ function render(key){
     html += `</div>`;
   } else {
     html += `</div>`;
-    if(step.text){ html += `<div class="outcome">${step.text}</div>`; }
+    if(step.text){
+      html += `<div class="outcome">${step.text}</div>`;
+      const examplePdfPath = getExamplePdfPath(step);
+      if(examplePdfPath){
+        html += `
+          <div class="pdf-link-wrap">
+            <a class="btn pdf-btn" href="${examplePdfPath}" target="_blank" rel="noopener noreferrer">Open PDF in New Tab</a>
+          </div>
+        `;
+      }
+    }
   }
 
   html += `
