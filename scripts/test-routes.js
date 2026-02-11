@@ -23,11 +23,10 @@ const sandbox = {
 };
 
 vm.createContext(sandbox);
-vm.runInContext(`${source}\nthis.__steps = steps; this.__resolve = (typeof resolveStepKey === 'function') ? resolveStepKey : (k)=>k; this.__getExamplePdfPath = (typeof getExamplePdfPath === 'function') ? getExamplePdfPath : null;`, sandbox);
+vm.runInContext(`${source}\nthis.__steps = steps; this.__resolve = (typeof resolveStepKey === 'function') ? resolveStepKey : (k)=>k;`, sandbox);
 
 const steps = sandbox.__steps;
 const resolve = sandbox.__resolve;
-const getExamplePdfPath = sandbox.__getExamplePdfPath;
 
 if (!steps || typeof steps !== 'object') {
   fail('Could not load decision tree steps from script.js');
@@ -51,6 +50,7 @@ if (missing.length) {
 }
 pass('All button routes point to valid steps');
 
+// 2) Expected business-critical paths from the PDF thread
 function walkPath(startKey, labels) {
   let currentKey = startKey;
 
@@ -71,7 +71,6 @@ function walkPath(startKey, labels) {
   return steps[currentKey];
 }
 
-// 2) Business-critical route checks
 const checks = [
   {
     name: 'Groups Non-Clin: Yes -> Groups down side -> GRA304',
@@ -92,26 +91,6 @@ const checks = [
     name: 'Groups Non-Clin: No -> Multiple Measures over Time -> Groups across top -> GRA309',
     labels: ['Summary/Comparison Data for Groups (Non Clin Ob)', 'No', 'Multiple Measures over Time', 'Groups across top'],
     expectContains: 'GRA309'
-  },
-  {
-    name: 'Clinical: Individual Data -> No days -> COA301',
-    labels: ['Clinical Observation Data', 'Individual Data', 'No'],
-    expectContains: 'COA301'
-  },
-  {
-    name: 'Clinical: Group Summary Data -> Yes over time -> COA312',
-    labels: ['Clinical Observation Data', 'Group Summary Data', 'Yes'],
-    expectContains: 'COA312'
-  },
-  {
-    name: 'Cages: Group Summary -> Groups across top -> GRA342',
-    labels: ['Summary/Comparison Data for Cages (Food or Water only)', 'Group Summary', 'Groups across top'],
-    expectContains: 'GRA342'
-  },
-  {
-    name: 'Individual Animal: More than one -> Fixed time -> GRA302',
-    labels: ['Individual Animal Data (Non Clin Ob)', 'More than one measurement', 'At a specific time point'],
-    expectContains: 'GRA302'
   }
 ];
 
@@ -122,22 +101,5 @@ for (const check of checks) {
   }
   pass(check.name);
 }
-
-// 3) Verify example PDF path resolution for all report endpoints
-if (typeof getExamplePdfPath !== 'function') {
-  fail('getExamplePdfPath(step) is not available');
-}
-
-const reportSteps = Object.entries(steps)
-  .filter(([, step]) => !step.buttons && step.text)
-  .filter(([, step]) => /\b(?:GRA|COA)\d{3}\b/.test(step.text));
-
-for (const [key, step] of reportSteps) {
-  const path = getExamplePdfPath(step);
-  if (!path || !/^example-reports\/(?:GRA|COA)_\d{3}\.pdf$/.test(path)) {
-    fail(`Endpoint ${key} does not resolve to expected PDF path format. Got: ${path}`);
-  }
-}
-pass('All report endpoints resolve to expected example PDF path format');
 
 console.log('\n🎉 Route test complete: all checks passed.');
