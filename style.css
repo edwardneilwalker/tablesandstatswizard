@@ -81,3 +81,19 @@ h1{ font-size:28px; color:var(--violet); margin:0 0 10px; }
 .nav{ margin-top:30px; display:flex; gap:20px; }
 .nav button{ background:none; border:none; color:var(--violet); font-size:16px; font-weight:600; cursor:pointer; padding:0; }
 .nav button:hover{ text-decoration:underline; }
+
+
+.pdf-link-wrap{
+  margin-top:12px;
+  animation: fadeInSoft .55s ease;
+}
+
+.pdf-btn{
+  display:block;
+  text-decoration:none;
+}
+
+@keyframes fadeInSoft{
+  from{opacity:0; transform:translateY(8px);} 
+  to{opacity:1; transform:translateY(0);} 
+}
